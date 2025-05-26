@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心理測驗網站</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298); /* 深藍色漸層背景 */
+            color: #fff;
+            font-family: 'Noto Serif TC', serif; /* 使用思源宋體 */
             margin: 0;
             padding: 0;
             display: flex;
@@ -15,31 +18,38 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f4f4f9;
         }
+
         .quiz-container {
-            background: #fff;
+            background: #2a3d66; /* 深藍色背景 */
+            color: #fff;
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             width: 90%;
             max-width: 400px;
             text-align: center;
         }
+
         .question {
             margin-bottom: 20px;
         }
+
         .options button {
-            margin: 5px;
-            padding: 10px 20px;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 16px;
+            color: #fff;
             border: none;
-            border-radius: 4px;
-            background-color: #007BFF;
-            color: white;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 5px;
             cursor: pointer;
+            transition: background 0.3s;
+            background-color: #4a69bd; /* 深藍色按鍵 */
         }
+
         .options button:hover {
-            background-color: #0056b3;
+            background-color: #3b5998; /* 按鍵懸停效果 */
         }
     </style>
 </head>
@@ -60,8 +70,37 @@
         const questions = [
             { question: '你喜歡什麼顏色？', options: ['紅色', '藍色', '綠色', '黃色'] },
             { question: '你最喜歡的動物是什麼？', options: ['貓', '狗', '鳥', '魚'] },
-            { question: '你最喜歡的季節是什麼？', options: ['春天', '夏天', '秋天', '冬天'] }
+            { question: '你最喜歡的季節是什麼？', options: ['春天', '夏天', '秋天', '冬天'] },
+            { question: '你喜歡什麼類型的音樂？', options: ['流行', '古典', '搖滾', '爵士'] },
+            { question: '你最喜歡的飲料是什麼？', options: ['咖啡', '茶', '果汁', '汽水'] },
+            { question: '你最喜歡的運動是什麼？', options: ['跑步', '游泳', '籃球', '瑜伽'] },
+            { question: '你最喜歡的食物是什麼？', options: ['披薩', '壽司', '漢堡', '沙拉'] },
+            { question: '你喜歡什麼樣的旅行方式？', options: ['自駕', '跟團', '背包客', '豪華旅行'] }
         ];
+
+        const personalityDescriptions = {
+            '紅色': '你是一個充滿熱情與活力的人，總是帶給人正能量！',
+            '藍色': '你是一個冷靜且理性的人，擅長分析與解決問題。',
+            '綠色': '你是一個喜歡和平與自然的人，總是給人一種舒適的感覺。',
+            '黃色': '你是一個充滿創意與樂觀的人，總是帶來歡樂與希望。',
+            '貓': '你是一個獨立且優雅的人，喜歡享受自己的時光。',
+            '狗': '你是一個忠誠且友善的人，總是願意幫助他人。',
+            '鳥': '你是一個自由且有遠見的人，喜歡探索未知的世界。',
+            '魚': '你是一個安靜且深思熟慮的人，擅長觀察與理解。',
+            '春天': '你是一個充滿希望與活力的人，喜歡新的開始。',
+            '夏天': '你是一個熱情且外向的人，喜歡熱鬧與冒險。',
+            '秋天': '你是一個成熟且穩重的人，喜歡思考與沉澱。',
+            '冬天': '你是一個內斂且溫暖的人，喜歡安靜與溫馨的時光。',
+            '流行': '你是一個緊跟潮流且充滿活力的人，喜歡新鮮事物。',
+            '古典': '你是一個優雅且有品味的人，喜歡細膩與深度。',
+            '搖滾': '你是一個充滿激情且叛逆的人，喜歡挑戰與突破。',
+            '爵士': '你是一個自由且有創意的人，喜歡即興與多變。',
+            '咖啡': '你是一個充滿能量且專注的人，喜歡追求效率。',
+            '茶': '你是一個平靜且內斂的人，喜歡細細品味生活。',
+            '果汁': '你是一個充滿活力且健康的人，喜歡自然與純粹。',
+            '汽水': '你是一個充滿童心且樂觀的人，喜歡快樂與輕鬆。'
+        };
+
         let currentQuestionIndex = 0;
         let answers = [];
 
@@ -72,11 +111,14 @@
             questionElement.textContent = questions[currentQuestionIndex].question;
             optionsContainer.innerHTML = '';
 
-            questions[currentQuestionIndex].options.forEach(option => {
+            const colors = ['#FFC0CB', '#B0E0E6', '#98FB98', '#FFE4B5', '#FFB6C1']; // 將淺黃色調整為更深的米黃色，提升對比度
+
+            questions[currentQuestionIndex].options.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.textContent = option;
                 button.onclick = () => selectAnswer(option);
                 button.className = 'option-button';
+                button.style.backgroundColor = colors[index % colors.length]; // 動態設定按鍵顏色
                 optionsContainer.appendChild(button);
             });
         }
@@ -99,23 +141,8 @@
         }
 
         function generateResult() {
-            const counts = answers.reduce((acc, answer) => {
-                acc[answer] = (acc[answer] || 0) + 1;
-                return acc;
-            }, {});
-
-            let result;
-            if (counts['紅色'] > (counts['藍色'] || 0) && counts['紅色'] > (counts['綠色'] || 0) && counts['紅色'] > (counts['黃色'] || 0)) {
-                result = '你是一個充滿熱情的人！';
-            } else if (counts['藍色'] > (counts['紅色'] || 0) && counts['藍色'] > (counts['綠色'] || 0) && counts['藍色'] > (counts['黃色'] || 0)) {
-                result = '你是一個冷靜且理性的人！';
-            } else if (counts['綠色'] > (counts['紅色'] || 0) && counts['綠色'] > (counts['藍色'] || 0) && counts['綠色'] > (counts['黃色'] || 0)) {
-                result = '你是一個喜歡和平與自然的人！';
-            } else if (counts['黃色'] > (counts['紅色'] || 0) && counts['黃色'] > (counts['藍色'] || 0) && counts['黃色'] > (counts['綠色'] || 0)) {
-                result = '你是一個充滿活力與創意的人！';
-            } else {
-                result = '你的性格多元且難以定義！';
-            }
+            const resultDescriptions = answers.map(answer => personalityDescriptions[answer] || '未知的性格特質');
+            const result = resultDescriptions.join('\n');
 
             Swal.fire({
                 title: '你的最終測驗結果',
