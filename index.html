@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心理測驗網站</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .quiz-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .options button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        .options button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>心理測驗</h1>
+        <div class="question">你喜歡什麼顏色？</div>
+        <div class="options">
+            <button onclick="selectAnswer('紅色')">紅色</button>
+            <button onclick="selectAnswer('藍色')">藍色</button>
+            <button onclick="selectAnswer('綠色')">綠色</button>
+            <button onclick="selectAnswer('黃色')">黃色</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const questions = [
+            { question: '你喜歡什麼顏色？', options: ['紅色', '藍色', '綠色', '黃色'] },
+            { question: '你最喜歡的動物是什麼？', options: ['貓', '狗', '鳥', '魚'] },
+            { question: '你最喜歡的季節是什麼？', options: ['春天', '夏天', '秋天', '冬天'] }
+        ];
+        let currentQuestionIndex = 0;
+        let answers = [];
+
+        function displayQuestion() {
+            const questionElement = document.querySelector('.question');
+            const optionsContainer = document.querySelector('.options');
+
+            questionElement.textContent = questions[currentQuestionIndex].question;
+            optionsContainer.innerHTML = '';
+
+            questions[currentQuestionIndex].options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => selectAnswer(option);
+                button.className = 'option-button';
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(answer) {
+            answers.push(answer);
+
+            if (answers.length === questions.length) { // 完成所有測試
+                generateResult();
+            } else {
+                currentQuestionIndex++;
+                displayQuestion();
+                Swal.fire({
+                    title: '測驗進行中',
+                    text: `你已完成 ${answers.length}/${questions.length} 測驗，請繼續回答。`,
+                    icon: 'info',
+                    confirmButtonText: '確定'
+                });
+            }
+        }
+
+        function generateResult() {
+            const counts = answers.reduce((acc, answer) => {
+                acc[answer] = (acc[answer] || 0) + 1;
+                return acc;
+            }, {});
+
+            let result;
+            if (counts['紅色'] > (counts['藍色'] || 0) && counts['紅色'] > (counts['綠色'] || 0) && counts['紅色'] > (counts['黃色'] || 0)) {
+                result = '你是一個充滿熱情的人！';
+            } else if (counts['藍色'] > (counts['紅色'] || 0) && counts['藍色'] > (counts['綠色'] || 0) && counts['藍色'] > (counts['黃色'] || 0)) {
+                result = '你是一個冷靜且理性的人！';
+            } else if (counts['綠色'] > (counts['紅色'] || 0) && counts['綠色'] > (counts['藍色'] || 0) && counts['綠色'] > (counts['黃色'] || 0)) {
+                result = '你是一個喜歡和平與自然的人！';
+            } else if (counts['黃色'] > (counts['紅色'] || 0) && counts['黃色'] > (counts['藍色'] || 0) && counts['黃色'] > (counts['綠色'] || 0)) {
+                result = '你是一個充滿活力與創意的人！';
+            } else {
+                result = '你的性格多元且難以定義！';
+            }
+
+            Swal.fire({
+                title: '你的最終測驗結果',
+                text: result,
+                icon: 'info',
+                confirmButtonText: '確定'
+            });
+
+            answers = []; // 重置答案
+            currentQuestionIndex = 0; // 重置問題索引
+            displayQuestion(); // 重置問題
+        }
+
+        // 初始化顯示第一個問題
+        displayQuestion();
+    </script>
+</body>
+</html>
