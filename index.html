@@ -8,9 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to bottom, #1e3c72, #2a5298); /* 深藍色漸層背景 */
+            background: linear-gradient(to bottom, #1e3c72, #2a5298, #ff7e5f, #feb47b); /* 增加更多顏色的漸層背景 */
             color: #fff;
-            font-family: 'Noto Serif TC', serif; /* 使用思源宋體 */
+            font-family: 'Noto Serif TC', serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -21,7 +21,7 @@
         }
 
         .quiz-container {
-            background: #2a3d66; /* 深藍色背景 */
+            background: linear-gradient(to bottom, #2a3d66, #4a69bd); /* 增加漸層效果 */
             color: #fff;
             border-radius: 10px;
             padding: 20px;
@@ -36,6 +36,29 @@
         }
 
         .options button {
+            background: linear-gradient(to right, #4a69bd, #3b5998, #ff7e5f); /* 增加按鈕的漸層顏色 */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s; /* 增加動畫效果 */
+        }
+
+        .options button:hover {
+            background: linear-gradient(to right, #feb47b, #ff7e5f); /* 懸停時的漸層效果 */
+            transform: scale(1.1); /* 懸停時放大效果 */
+        }
+
+        .result {
+            margin: 20px 0;
+            font-size: 18px;
+            line-height: 1.4;
+            text-align: left; /* 將文字靠左對齊 */
+        }
+
+        button {
             font-family: 'Noto Serif TC', serif;
             font-size: 16px;
             color: #fff;
@@ -45,17 +68,36 @@
             margin: 5px;
             cursor: pointer;
             transition: background 0.3s;
-            background-color: #4a69bd; /* 深藍色按鍵 */
+            background-color: #28a745; /* 綠色按鈕 */
         }
 
-        .options button:hover {
-            background-color: #3b5998; /* 按鍵懸停效果 */
+        button:hover {
+            background-color: #218838; /* 按鈕懸停效果 */
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #28a745;
+            width: 0;
+            transition: width 0.3s;
         }
     </style>
 </head>
 <body>
     <div class="quiz-container">
         <h1>心理測驗</h1>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
         <div class="question">你喜歡什麼顏色？</div>
         <div class="options">
             <button onclick="selectAnswer('紅色')">紅色</button>
@@ -75,89 +117,236 @@
             { question: '你最喜歡的飲料是什麼？', options: ['咖啡', '茶', '果汁', '汽水'] },
             { question: '你最喜歡的運動是什麼？', options: ['跑步', '游泳', '籃球', '瑜伽'] },
             { question: '你最喜歡的食物是什麼？', options: ['披薩', '壽司', '漢堡', '沙拉'] },
-            { question: '你喜歡什麼樣的旅行方式？', options: ['自駕', '跟團', '背包客', '豪華旅行'] }
+            { question: '你喜歡什麼樣的旅行方式？', options: ['自駕', '跟團', '背包客', '豪華旅行'] },
+            { question: '你最喜歡的電影類型是什麼？', options: ['喜劇', '動作', '科幻', '恐怖'] },
+            { question: '你最喜歡的書籍類型是什麼？', options: ['小說', '歷史', '科學', '藝術'] },
+            { question: '你最喜歡的花是什麼？', options: ['玫瑰', '向日葵', '鬱金香', '百合'] },
+            { question: '你最喜歡的天氣是什麼？', options: ['晴天', '雨天', '雪天', '陰天'] }
         ];
 
         const personalityDescriptions = {
-            '紅色': '你是一個充滿熱情與活力的人，總是帶給人正能量！',
-            '藍色': '你是一個冷靜且理性的人，擅長分析與解決問題。',
-            '綠色': '你是一個喜歡和平與自然的人，總是給人一種舒適的感覺。',
-            '黃色': '你是一個充滿創意與樂觀的人，總是帶來歡樂與希望。',
-            '貓': '你是一個獨立且優雅的人，喜歡享受自己的時光。',
-            '狗': '你是一個忠誠且友善的人，總是願意幫助他人。',
-            '鳥': '你是一個自由且有遠見的人，喜歡探索未知的世界。',
-            '魚': '你是一個安靜且深思熟慮的人，擅長觀察與理解。',
-            '春天': '你是一個充滿希望與活力的人，喜歡新的開始。',
-            '夏天': '你是一個熱情且外向的人，喜歡熱鬧與冒險。',
-            '秋天': '你是一個成熟且穩重的人，喜歡思考與沉澱。',
-            '冬天': '你是一個內斂且溫暖的人，喜歡安靜與溫馨的時光。',
-            '流行': '你是一個緊跟潮流且充滿活力的人，喜歡新鮮事物。',
-            '古典': '你是一個優雅且有品味的人，喜歡細膩與深度。',
-            '搖滾': '你是一個充滿激情且叛逆的人，喜歡挑戰與突破。',
-            '爵士': '你是一個自由且有創意的人，喜歡即興與多變。',
-            '咖啡': '你是一個充滿能量且專注的人，喜歡追求效率。',
-            '茶': '你是一個平靜且內斂的人，喜歡細細品味生活。',
-            '果汁': '你是一個充滿活力且健康的人，喜歡自然與純粹。',
-            '汽水': '你是一個充滿童心且樂觀的人，喜歡快樂與輕鬆。'
+            '紅色': '充滿熱情與活力的人，總是帶給人正能量！',
+            '藍色': '冷靜且理性的人，擅長分析與解決問題。',
+            '綠色': '喜歡和平與自然的人，總是給人一種舒適的感覺。',
+            '黃色': '充滿創意與樂觀的人，總是帶來歡樂與希望。',
+            '貓': '獨立且優雅的人，喜歡享受自己的時光。',
+            '狗': '忠誠且友善的人，總是願意幫助他人。',
+            '鳥': '自由且有遠見的人，喜歡探索未知的世界。',
+            '魚': '安靜且深思熟慮的人，擅長觀察與理解。',
+            '春天': '充滿希望與活力的人，喜歡新的開始。',
+            '夏天': '熱情且外向的人，喜歡熱鬧與冒險。',
+            '秋天': '成熟且穩重的人，喜歡思考與沉澱。',
+            '冬天': '內斂且溫暖的人，喜歡安靜與溫馨的時光。',
+            '流行': '緊跟潮流且充滿活力的人，喜歡新鮮事物。',
+            '古典': '優雅且有品味的人，喜歡細膩與深度。',
+            '搖滾': '充滿激情且叛逆的人，喜歡挑戰與突破。',
+            '爵士': '自由且有創意的人，喜歡即興與多變。',
+            '咖啡': '充滿能量且專注的人，喜歡追求效率。',
+            '茶': '平靜且內斂的人，喜歡細細品味生活。',
+            '果汁': '充滿活力且健康的人，喜歡自然與純粹。',
+            '汽水': '充滿童心且樂觀的人，喜歡快樂與輕鬆。',
+            '披薩': '熱愛分享且隨和的人，喜歡與朋友共度時光。',
+            '壽司': '注重細節且有品味的人，喜歡精緻的事物。',
+            '漢堡': '簡單且直接的人，喜歡快速解決問題。',
+            '沙拉': '健康且自律的人，喜歡保持平衡的生活方式。',
+            '自駕': '獨立且自由的人，喜歡掌控自己的旅程。',
+            '跟團': '喜歡安全感且有計劃的人，喜歡有組織的活動。',
+            '背包客': '冒險且隨性的旅人，喜歡探索未知的地方。',
+            '豪華旅行': '追求舒適且享受生活的人，喜歡高品質的體驗。',
+            '喜劇': '樂觀且幽默的人，喜歡帶給人歡笑。',
+            '動作': '充滿能量且果斷的人，喜歡挑戰與冒險。',
+            '科幻': '富有想像力且好奇心強的人，喜歡探索未來。',
+            '恐怖': '勇敢且喜歡刺激的人，喜歡挑戰自己的極限。',
+            '小說': '富有想像力且感性的人，喜歡沉浸在故事中。',
+            '歷史': '有深度且喜歡學習的人，喜歡了解過去的故事。',
+            '科學': '理性且好奇的人，喜歡探索世界的運作原理。',
+            '藝術': '有創意且感性的人，喜歡表達自己的情感。',
+            '玫瑰': '浪漫且熱情的人，喜歡追求美好的事物。',
+            '向日葵': '樂觀且充滿希望的人，喜歡陽光與正能量。',
+            '鬱金香': '優雅且有品味的人，喜歡簡單而美好的事物。',
+            '百合': '純潔且溫柔的人，喜歡平靜與和諧的生活。',
+            '晴天': '積極且充滿活力的人，喜歡陽光與自由。',
+            '雨天': '感性且內斂的人，喜歡安靜與沉思。',
+            '雪天': '純真且浪漫的人，喜歡夢幻與美好的事物。',
+            '陰天': '冷靜且深思熟慮的人，喜歡平靜與安穩。'
         };
+
+        const aptitudeQuestions = [
+            { question: '你喜歡解決複雜的數學問題嗎？', options: ['是', '否'] },
+            { question: '你對藝術創作感興趣嗎？', options: ['是', '否'] },
+            { question: '你喜歡與人合作完成任務嗎？', options: ['是', '否'] },
+            { question: '你對科技產品的運作原理感興趣嗎？', options: ['是', '否'] },
+            { question: '你喜歡規劃和組織活動嗎？', options: ['是', '否'] }
+        ];
+
+        const orientationQuestions = [
+            { question: '你更容易被哪種性別的人吸引？', options: ['男性', '女性', '兩者皆是', '都不是'] },
+            { question: '你是否曾對同性別的人產生過浪漫情感？', options: ['是', '否'] },
+            { question: '你是否對異性別的人產生過浪漫情感？', options: ['是', '否'] },
+            { question: '你是否認為性別對於你的浪漫情感影響不大？', options: ['是', '否'] }
+        ];
 
         let currentQuestionIndex = 0;
         let answers = [];
+        let shuffledQuestions = [];
+
+        function shuffleQuestions() {
+            shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+        }
 
         function displayQuestion() {
             const questionElement = document.querySelector('.question');
             const optionsContainer = document.querySelector('.options');
+            const progressBar = document.querySelector('.progress-bar');
 
-            questionElement.textContent = questions[currentQuestionIndex].question;
+            questionElement.textContent = shuffledQuestions[currentQuestionIndex].question;
             optionsContainer.innerHTML = '';
 
-            const colors = ['#FFC0CB', '#B0E0E6', '#98FB98', '#FFE4B5', '#FFB6C1']; // 將淺黃色調整為更深的米黃色，提升對比度
-
-            questions[currentQuestionIndex].options.forEach((option, index) => {
+            shuffledQuestions[currentQuestionIndex].options.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.textContent = option;
                 button.onclick = () => selectAnswer(option);
                 button.className = 'option-button';
-                button.style.backgroundColor = colors[index % colors.length]; // 動態設定按鍵顏色
+
+                // 使用 HSL 顏色模型動態生成顏色，確保每個按鈕顏色不同
+                const hue = (index * 360) / shuffledQuestions[currentQuestionIndex].options.length;
+                button.style.background = `linear-gradient(to right, hsl(${hue}, 70%, 50%), hsl(${(hue + 30) % 360}, 70%, 50%))`; // 使用漸層顏色
+                button.style.border = 'none'; // 移除邊框
+                button.style.color = '#fff'; // 確保文字顏色清晰
+
                 optionsContainer.appendChild(button);
             });
+
+            progressBar.style.width = `${((currentQuestionIndex + 1) / shuffledQuestions.length) * 100}%`;
         }
 
         function selectAnswer(answer) {
             answers.push(answer);
 
-            if (answers.length === questions.length) { // 完成所有測試
-                generateResult();
+            if (currentQuestionIndex + 1 === shuffledQuestions.length) { // 確保在最後一題後生成結果
+                if (shuffledQuestions === questions || JSON.stringify(shuffledQuestions) === JSON.stringify(questions)) {
+                    generateResult();
+                } else if (JSON.stringify(shuffledQuestions) === JSON.stringify(aptitudeQuestions)) {
+                    generateAptitudeResult();
+                } else if (JSON.stringify(shuffledQuestions) === JSON.stringify(orientationQuestions)) {
+                    generateOrientationResult();
+                }
             } else {
                 currentQuestionIndex++;
-                displayQuestion();
-                Swal.fire({
-                    title: '測驗進行中',
-                    text: `你已完成 ${answers.length}/${questions.length} 測驗，請繼續回答。`,
-                    icon: 'info',
-                    confirmButtonText: '確定'
-                });
+                displayQuestion(); // 顯示下一個問題
             }
         }
 
         function generateResult() {
             const resultDescriptions = answers.map(answer => personalityDescriptions[answer] || '未知的性格特質');
-            const result = resultDescriptions.join('\n');
+            const result = resultDescriptions.length > 0
+                ? `你是一個${resultDescriptions.join('，')}。`
+                : '未能生成結果，請確認是否回答了所有問題。';
 
-            Swal.fire({
-                title: '你的最終測驗結果',
-                text: result,
-                icon: 'info',
-                confirmButtonText: '確定'
-            });
-
-            answers = []; // 重置答案
-            currentQuestionIndex = 0; // 重置問題索引
-            displayQuestion(); // 重置問題
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>你的最終測驗結果</h1>
+                <div class="result">${result}</div>
+                <button onclick="restartQuiz()">重新開始測驗</button>
+                <button onclick="startAptitudeTest()">開始性向測驗</button>
+                <button onclick="startOrientationTest()">開始性取向測驗</button>
+            `;
         }
 
-        // 初始化顯示第一個問題
-        displayQuestion();
+        function restartQuiz() {
+            answers = []; // 重置答案
+            currentQuestionIndex = 0; // 重置問題索引
+            shuffleQuestions();
+
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>心理測驗</h1>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="question"></div>
+                <div class="options"></div>
+            `;
+
+            displayQuestion(); // 重新顯示第一個問題
+        }
+
+        function startAptitudeTest() {
+            shuffledQuestions = [...aptitudeQuestions];
+            currentQuestionIndex = 0;
+            answers = [];
+
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>性向測驗</h1>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="question"></div>
+                <div class="options"></div>
+            `;
+
+            displayQuestion();
+        }
+
+        function generateAptitudeResult() {
+            const aptitudeResult = answers.includes('是')
+                ? '根據你的回答，我們發現你對數學、藝術、合作、科技、規劃等領域有潛在興趣。'
+                : '根據你的回答，我們暫時無法確定你的興趣方向，建議多嘗試不同領域的活動。';
+
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>性向測驗結果</h1>
+                <div class="result">${aptitudeResult}</div>
+                <button onclick="restartQuiz()">重新開始測驗</button>
+            `;
+        }
+
+        function startOrientationTest() {
+            shuffledQuestions = [...orientationQuestions];
+            currentQuestionIndex = 0;
+            answers = [];
+
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>性取向測驗</h1>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="question"></div>
+                <div class="options"></div>
+            `;
+
+            displayQuestion();
+        }
+
+        function generateOrientationResult() {
+            const orientationResult = answers.includes('男性') && answers.includes('女性')
+                ? '根據你的回答，我們發現你的性取向可能是雙性戀。'
+                : answers.includes('男性')
+                ? '根據你的回答，我們發現你的性取向可能是同性戀。'
+                : answers.includes('女性')
+                ? '根據你的回答，我們發現你的性取向可能是異性戀。'
+                : '根據你的回答，我們發現你的性取向可能是無性戀。';
+
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>性取向測驗結果</h1>
+                <div class="result">${orientationResult}</div>
+                <button onclick="restartQuiz()">重新開始測驗</button>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizContainer = document.querySelector('.quiz-container');
+            quizContainer.innerHTML = `
+                <h1>歡迎來到心理測驗網站</h1>
+                <p>請選擇你想進行的測驗：</p>
+                <button onclick="restartQuiz()">心理測驗</button>
+                <button onclick="startAptitudeTest()">性向測驗</button>
+                <button onclick="startOrientationTest()">性取向測驗</button>
+            `;
+        });
     </script>
 </body>
 </html>
